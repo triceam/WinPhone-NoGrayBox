@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html>
+
+    <head>
+      <title>No-Gray Boxes!</title>
+        <meta name="viewport" content="initial-scale=1.0; maximum-scale=1.0; minimum-scale=1.0; user-scalable=no;" />
+
+      <script src="cordova-1.7.0.js"></script>
+    	<script src="js/libs/jquery-1.7.1.js"></script>
+      <script src="js/TouchClick.js"></script>
+
+      <style>
+        span{
+          padding:10px;
+          margin:10px;
+          background-color:#C99;
+          border:1px solid black;
+          color:black;
+          display:block;
+        }
+
+        .active {
+         background-color:yellow;
+        }
+      </style>
+
+      <script>
+
+        document.addEventListener("deviceready", onDeviceReady, false);
+
+        function onDeviceReady() {
+          new TouchClick( $("#click1"), clickHandler1 );
+          new TouchClick( $("#click2"), clickHandler2 );
+          new TouchClick( $("#click3"), clickHandler3 );
+        }
+
+        function clickHandler1( event ) {
+         $("#output").html( "ONE was clicked" );
+        }
+
+        function clickHandler2( event ) {
+          $("#output").html( "TWO was clicked" );
+        }
+
+        function clickHandler3( event ) {
+         $("#output").html( "THREE was clicked" );
+        }
+
+      </script>
+      
+      <body id="body" onmousedown="return false;" onselectstart="return false;">
+
+          No-Gray Boxes!
+          <span id="click1">CLICK ME 1!</span>
+          <span id="click2">CLICK ME 2!</span>
+          <span id="click3">CLICK ME 3!</span>
+
+          <div id="output"></div>
+      
+      </body>
+    
+
+</html>
