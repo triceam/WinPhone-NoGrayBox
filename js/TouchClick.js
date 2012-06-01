@@ -10,15 +10,15 @@ if ( _Element ){
 		else
 			this.__addEventListener(type, listener, useCapture);
 	};
-
-	var silencer = function (event) {
-		event.preventDefault();
-		event.stopImmediatePropagation();
-		return false;
-	}
 }
 catch(e){
 	console.log(e);
+}
+
+var silencer = function (event) {
+	event.preventDefault();
+	event.stopImmediatePropagation();
+	return false;
 }
 
 function TouchClick( target, handler, highlight, silenceable ) {
