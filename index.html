@@ -29,21 +29,22 @@
         document.addEventListener("deviceready", onDeviceReady, false);
 
         function onDeviceReady() {
-          $("#click1").on( "click", clickHandler1 );
-          $("#click2").on( "click", clickHandler2 );
-          $("#click3").on( "click", clickHandler3 );
+          $("#click1")[0].addEventListener( "click", clickHandler1 );
+          $("#click2")[0].addEventListener( "click", clickHandler2 );
+          $("#click3")[0].addEventListener( "click", clickHandler3 );
+        
         }
 
         function clickHandler1( event ) {
-          $("#output").html( "ONE was clicked" );
+        $("#output").html( "ONE was clicked" );
         }
 
         function clickHandler2( event ) {
-          $("#output").html( "TWO was clicked" );
+        $("#output").html( "TWO was clicked" );
         }
 
         function clickHandler3( event ) {
-          $("#output").html( "THREE was clicked" );
+        $("#output").html( "THREE was clicked" );
         }
 
       </script>

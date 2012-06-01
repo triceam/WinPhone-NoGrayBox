@@ -4,8 +4,10 @@ if ( _Element ){
 	_Element.prototype.__addEventListener = _Element.prototype.addEventListener;
 	_Element.prototype.addEventListener = function(type, listener, useCapture)
 	{
+	console.log( arguments );
 		if (type && type.toLowerCase() == "click") {
-			new TouchClick( $(this), listener);
+			console.log( listener );
+			new TouchClick( $(this), listener );
 		}
 		else
 			this.__addEventListener(type, listener, useCapture);
@@ -79,7 +81,7 @@ TouchClick.prototype.touchEndHander = function (event) {
 		var totalTime = new Date().getTime() - this.startTime;
 		this.startTime = 0;
 
-		//console.log( totalTime );
+		console.log( totalTime );
 		if ( totalTime <= this.TOUCH_DELAY_TOLERANCE ) {
 			var diff = {
 				x: (this.startPosition.x - event.pageX),
@@ -87,12 +89,13 @@ TouchClick.prototype.touchEndHander = function (event) {
 			}
 
 			this.startPosition.x = this.startPosition.y = -99
-			//console.log( diff );
+			console.log( diff );
 
 			if ( Math.abs(diff.x) <= this.TOUCH_PROXIMITY_TOLERANCE && 
 				 Math.abs(diff.y) <= this.TOUCH_PROXIMITY_TOLERANCE )  {
-
-				 //console.log("CLICK!!!!!!!!!!!!!!!!!!11");
+				 
+				 console.log("CLICK!!!!!!!!!!!!!!!!!!11");
+				 console.log(this.handler);
 				 if (this.handler) {
 					this.silence();
 
@@ -107,7 +110,7 @@ TouchClick.prototype.touchEndHander = function (event) {
 									self.restore();
 								}
 								catch(e) {
-									//console.log(e);
+									console.log(e);
 								}
 							},500 );
 						}
@@ -128,7 +131,7 @@ TouchClick.prototype.touchEndHander = function (event) {
 				self.restore();
 			}
 			catch(e) {
-				//console.log(e);
+				console.log(e);
 			}
 		},300 );
 	
