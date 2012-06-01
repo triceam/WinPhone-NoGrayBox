@@ -4,9 +4,9 @@ if ( _Element ){
 	_Element.prototype.__addEventListener = _Element.prototype.addEventListener;
 	_Element.prototype.addEventListener = function(type, listener, useCapture)
 	{
-	console.log( arguments );
+	//console.log( this instanceof _Element );
+	//console.log( arguments );
 		if (type && type.toLowerCase() == "click") {
-			console.log( listener );
 			new TouchClick( $(this), listener );
 		}
 		else
@@ -74,14 +74,15 @@ TouchClick.prototype.touchStartHander = function (event) {
 
 TouchClick.prototype.touchEndHander = function (event) {
 	try{
-		console.log( "touchEndHander");
+		var __arguments = arguments;
+		//console.log( "touchEndHander");
 		window.removeEventListener( this.END, this.touchEnd, true );
 		var self = this;
 	
 		var totalTime = new Date().getTime() - this.startTime;
 		this.startTime = 0;
 
-		console.log( totalTime );
+		//console.log( totalTime );
 		if ( totalTime <= this.TOUCH_DELAY_TOLERANCE ) {
 			var diff = {
 				x: (this.startPosition.x - event.pageX),
@@ -89,7 +90,7 @@ TouchClick.prototype.touchEndHander = function (event) {
 			}
 
 			this.startPosition.x = this.startPosition.y = -99
-			console.log( diff );
+			//console.log( diff );
 
 			if ( Math.abs(diff.x) <= this.TOUCH_PROXIMITY_TOLERANCE && 
 				 Math.abs(diff.y) <= this.TOUCH_PROXIMITY_TOLERANCE )  {
@@ -103,7 +104,13 @@ TouchClick.prototype.touchEndHander = function (event) {
 					clearTimeout( this.handlerTimeout );
 					this.handlerTimeout = setTimeout( function() {
 						try {
-							self.handler( event );
+							
+							var evt = document.createEvent("MouseEvents");
+							evt.initMouseEvent("click", true, true, window,
+								0, 0, 0, 0, 0, false, false, false, false, 0, null);
+
+							self.handler( evt );
+
 							clearTimeout( self.restoreTimeout );
 							self.restoreTimeout = setTimeout( function() {
 								try {
@@ -115,7 +122,7 @@ TouchClick.prototype.touchEndHander = function (event) {
 							},500 );
 						}
 						catch(e) {
-							//console.log(e);
+							console.log(e);
 						}
 					},10 );
 					event.preventDefault();

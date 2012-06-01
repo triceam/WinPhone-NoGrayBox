@@ -27,12 +27,14 @@
       <script>
 
         document.addEventListener("deviceready", onDeviceReady, false);
+        $().ready(function(){
+         onDeviceReady();
+        });
 
         function onDeviceReady() {
           $("#click1")[0].addEventListener( "click", clickHandler1 );
-          $("#click2")[0].addEventListener( "click", clickHandler2 );
-          $("#click3")[0].addEventListener( "click", clickHandler3 );
-        
+          $("#click2").on( "click", clickHandler2 );
+          $("#click3").click( clickHandler3 );
         }
 
         function clickHandler1( event ) {
@@ -52,9 +54,9 @@
       <body id="body" onmousedown="return false;" onselectstart="return false;">
 
           No-Gray Boxes!
-          <span id="click1">CLICK ME ONE!</span>
-          <span id="click2">CLICK ME TWO!</span>
-          <span id="click3">CLICK ME THREE!</span>
+          <span id="click1">ONE: uses addEventListener( "click", handler )</span>
+          <span id="click2">TWO: uses $("click2").on( "click", handler )</span>
+          <span id="click3">THREE: uses $("#click3").click( handler );</span>
 
           <div id="output"></div>
       
