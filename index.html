@@ -29,13 +29,13 @@
         document.addEventListener("deviceready", onDeviceReady, false);
 
         function onDeviceReady() {
-          new TouchClick( $("#click1"), clickHandler1 );
-          new TouchClick( $("#click2"), clickHandler2 );
-          new TouchClick( $("#click3"), clickHandler3 );
+          $("#click1").on( "click", clickHandler1 );
+          $("#click2").on( "click", clickHandler2 );
+          $("#click3").on( "click", clickHandler3 );
         }
 
         function clickHandler1( event ) {
-         $("#output").html( "ONE was clicked" );
+          $("#output").html( "ONE was clicked" );
         }
 
         function clickHandler2( event ) {
@@ -43,7 +43,7 @@
         }
 
         function clickHandler3( event ) {
-         $("#output").html( "THREE was clicked" );
+          $("#output").html( "THREE was clicked" );
         }
 
       </script>
@@ -51,9 +51,9 @@
       <body id="body" onmousedown="return false;" onselectstart="return false;">
 
           No-Gray Boxes!
-          <span id="click1">CLICK ME 1!</span>
-          <span id="click2">CLICK ME 2!</span>
-          <span id="click3">CLICK ME 3!</span>
+          <span id="click1">CLICK ME ONE!</span>
+          <span id="click2">CLICK ME TWO!</span>
+          <span id="click3">CLICK ME THREE!</span>
 
           <div id="output"></div>
       

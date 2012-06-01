@@ -1,8 +1,24 @@
-﻿
-var silencer = function (event) {
-	event.preventDefault();
-	event.stopImmediatePropagation();
-	return false;
+﻿var _Element = HTMLElement || Element;
+
+if ( _Element ){
+	_Element.prototype.__addEventListener = _Element.prototype.addEventListener;
+	_Element.prototype.addEventListener = function(type, listener, useCapture)
+	{
+		if (type && type.toLowerCase() == "click") {
+			new TouchClick( $(this), listener);
+		}
+		else
+			this.__addEventListener(type, listener, useCapture);
+	};
+
+	var silencer = function (event) {
+		event.preventDefault();
+		event.stopImmediatePropagation();
+		return false;
+	}
+}
+catch(e){
+	console.log(e);
 }
 
 function TouchClick( target, handler, highlight, silenceable ) {
