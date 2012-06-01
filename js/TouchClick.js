@@ -11,9 +11,6 @@ if ( _Element ){
 			this.__addEventListener(type, listener, useCapture);
 	};
 }
-catch(e){
-	console.log(e);
-}
 
 var silencer = function (event) {
 	event.preventDefault();
