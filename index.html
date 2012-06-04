@@ -28,7 +28,7 @@
 
         document.addEventListener("deviceready", onDeviceReady, false);
         $().ready(function(){
-         onDeviceReady();
+          onDeviceReady();
         });
 
         function onDeviceReady() {
@@ -38,15 +38,15 @@
         }
 
         function clickHandler1( event ) {
-        $("#output").html( "ONE was clicked" );
+         $("#output").html( "ONE was clickedd <br/>" + event.relatedTarget.outerHTML.toString() );
         }
 
         function clickHandler2( event ) {
-        $("#output").html( "TWO was clicked" );
+         $("#output").html( "TWO was clickedd <br/>" + event.relatedTarget.outerHTML.toString() );
         }
 
         function clickHandler3( event ) {
-        $("#output").html( "THREE was clicked" );
+         $("#output").html( "THREE was clicked <br/>" + event.relatedTarget.outerHTML.toString() );
         }
 
       </script>

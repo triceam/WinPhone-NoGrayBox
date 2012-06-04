@@ -4,9 +4,7 @@ if ( _Element ){
 	_Element.prototype.__addEventListener = _Element.prototype.addEventListener;
 	_Element.prototype.addEventListener = function(type, listener, useCapture)
 	{
-	//console.log( this instanceof _Element );
-	//console.log( arguments );
-		if (type && type.toLowerCase() == "click") {
+		if (type && type.toLowerCase() === "click" && !TouchClick.overrideDefault === false) {
 			new TouchClick( $(this), listener );
 		}
 		else
@@ -27,18 +25,20 @@ function TouchClick( target, handler, highlight, silenceable ) {
 	this.highlight = !(highlight === false)
 	this.silenceable = true;//(silenceable == true);
 	this.silenced = false;
+	
+	var regexp = new RegExp("Windows Phone OS");	
+	this.winPhone = (navigator.userAgent.search(regexp) >= 0);
+
 
 	if ( this.silenceable ) {
 		this.target.addClass( "TouchClick" );
 	}
 
-	this.touchSupported = false;//'ontouchstart' in window;
+	this.touchSupported = 'ontouchstart' in window;
 	this.START = this.touchSupported ? "touchstart" : "mousedown";
 	this.END = this.touchSupported ? "touchend" : "mouseup";
 	this.TOUCH_PROXIMITY_TOLERANCE = 15;
 	this.TOUCH_DELAY_TOLERANCE = 1000;
-	
-	//console.log( "TouchClick" + target.attr("id") );
 	
 	this.touchStart = function( event ) {
 		self.touchStartHander( event );
@@ -53,36 +53,33 @@ function TouchClick( target, handler, highlight, silenceable ) {
 		}
 	}
 	
-	this.restore();
+	this.restore(false);
 }
+TouchClick.overrideDefault = true;
 
 TouchClick.prototype.touchStartHander = function (event) {
 	var rawTarget = this.target.get()[0];
 	rawTarget.removeEventListener( this.START, this.touchStart, false );
 	window.addEventListener( this.END, this.touchEnd, true );
 
-	console.log( "touchStartHander: " + this.target.html());
 	this.startTime = new Date().getTime();
 	this.startPosition = {x:event.pageX, y:event.pageY}
 	
 	if ( this.highlight ) {
 		this.target.addClass("active");
 	}
-	//console.log(this.target);
+
 	return false;
 }
 
 TouchClick.prototype.touchEndHander = function (event) {
 	try{
-		var __arguments = arguments;
-		//console.log( "touchEndHander");
 		window.removeEventListener( this.END, this.touchEnd, true );
 		var self = this;
 	
 		var totalTime = new Date().getTime() - this.startTime;
 		this.startTime = 0;
 
-		//console.log( totalTime );
 		if ( totalTime <= this.TOUCH_DELAY_TOLERANCE ) {
 			var diff = {
 				x: (this.startPosition.x - event.pageX),
@@ -90,13 +87,10 @@ TouchClick.prototype.touchEndHander = function (event) {
 			}
 
 			this.startPosition.x = this.startPosition.y = -99
-			//console.log( diff );
 
 			if ( Math.abs(diff.x) <= this.TOUCH_PROXIMITY_TOLERANCE && 
 				 Math.abs(diff.y) <= this.TOUCH_PROXIMITY_TOLERANCE )  {
 				 
-				 console.log("CLICK!!!!!!!!!!!!!!!!!!11");
-				 console.log(this.handler);
 				 if (this.handler) {
 					this.silence();
 
@@ -107,14 +101,13 @@ TouchClick.prototype.touchEndHander = function (event) {
 							
 							var evt = document.createEvent("MouseEvents");
 							evt.initMouseEvent("click", true, true, window,
-								0, 0, 0, 0, 0, false, false, false, false, 0, null);
-
+								0, 0, 0, 0, 0, false, false, false, false, 0, self.target.get()[0]);
+							
 							self.handler( evt );
-
 							clearTimeout( self.restoreTimeout );
 							self.restoreTimeout = setTimeout( function() {
 								try {
-									self.restore();
+									self.restore(true);
 								}
 								catch(e) {
 									console.log(e);
@@ -135,7 +128,7 @@ TouchClick.prototype.touchEndHander = function (event) {
 		clearTimeout( this.restoreTimeout );
 		this.restoreTimeout = setTimeout( function() {
 			try {
-				self.restore();
+				self.restore(true);
 			}
 			catch(e) {
 				console.log(e);
@@ -149,50 +142,49 @@ TouchClick.prototype.touchEndHander = function (event) {
 
 var silenced = [];
 TouchClick.prototype.silence = function () {
-	
+	if ( !this.winPhone ) return;
 	var self = this;
 	try {
+		window.addEventListener( "mousedown", silencer, true );
 		$(".TouchClick").each( function(index) {
 			if ( this != self.target.get()[0] ) {
 				this.addEventListener( "mousedown", silencer, true );
-				//console.log( "silence: " + $(this).html() );
 				silenced.push( {target:this, silencer:silencer} );
 			}
 		});
 	}catch(e) {
-		console.log( "silence" );
 		console.log(e);
 	}
-	this.silenced = true;
 }
 
 TouchClick.prototype.unsilence = function () {
-	//if ( !this.silenced ) return;
-	//console.log( "unsilence" );
+	if ( !this.winPhone ) return;
 	var self = this;
 	var item = undefined;
 	try {
 		while( silenced.length > 0 ) {
 			item = silenced.pop();
-			//console.log( silenced.length + ": " + $(target).html() );
 			item.target.removeEventListener( "mousedown", item.silencer, true );
 
 		}
+		window.removeEventListener( "mousedown", silencer, true );
 	}catch(e) {
-		console.log( "unsilence" );
 		console.log(item);
 		console.log(e);
 	}
-	this.silenced = false;
 }
 
-TouchClick.prototype.restore = function () {
+TouchClick.prototype.restore = function (unsilence) {
 	try{
 		var rawTarget = this.target.get()[0];
 		rawTarget.removeEventListener( this.START, this.touchStart, false );
 		rawTarget.addEventListener( this.START, this.touchStart, false );
 		window.removeEventListener( this.END, this.touchEnd, true );
-		this.unsilence();
+		
+		if ( unsilence == true ) {
+			this.unsilence();
+		}
+
 		if ( this.highlight ) {
 			this.target.removeClass("active");
 		}
