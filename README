@@ -1,0 +1,22 @@
+TouchClick.js
+
+TouchClick.js encapsulates the logic necessary to add "click" behaviors, without the annoying gray highlight box in PhoneGap applications on Windows Phone devices. 
+
+TouchClick.js overrides the addEventListener function, intercepts "click" events, and adds its own logic for determining behaviors without invoking the gray highlight box.  
+
+DO NOT USE <A> ANCHOR TAGS!  Anchor tags always have the gray highlight.  You cannot turn this off.  Instead, add "click" handlers to <li>, <div>, <span>, or other HTML elements.
+
+You can read more about this technique and see a video of it in action at:
+http://www.tricedesigns.com/2012/06/04/getting-rid-of-the-gray-box-in-phonegap-for-windows-phone/
+
+Here is the strategy for preventing the gray highlight:
+
+1) Do not use <a> anchor tags ever.
+2) Assign a "mousedown" event handler to the <span>, <div> or other element that you want to be clickable.
+3) When the "mousedown" event handler is invoked, remove the "mousedown" event handler, save the mousedown input coordinates, and add a "mouseup" event handler to the window object.
+4) When the "mouseup" event handler is invoked, remove the "mouseup" event handler, and then compare the mouse coordinates. If the mouse coordinates have not changed, and its within a reasonable amount of time, you can infer that this should be a "click" event, and invoke an action as desired.
+5) Set a timeout to restore the "mousedown" event handler in an asynchronus operation. If you re-add the "mousedown" event handler inside of the "mouseup" event handler, you will still get the gray box.
+
+The "silencer" functionality inside of TouchClick.js is used to prevent duplicate click events that can happen on windows phone when manipulating DOM elements.  (This is a windows-phone specific issue).
+
+**Only addEventListener has been implemented in this example.  "removeEventListener" has not been implemented.
